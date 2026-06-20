@@ -50,6 +50,14 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 # Export compile commands.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Enforce shadow variable errors.
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  add_compile_options(-Wshadow)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-Wshadow-field)
+  endif()
+endif()
+
 # Find threads and filesystem.
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Filesystem REQUIRED Final Experimental)

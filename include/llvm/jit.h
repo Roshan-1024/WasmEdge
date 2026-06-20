@@ -56,7 +56,7 @@ private:
 
 class JIT {
 public:
-  JIT(const Configure &Conf) noexcept : Conf(Conf) {}
+  JIT(const Configure &VConf) noexcept : Conf(VConf) {}
   Expect<std::shared_ptr<Executable>> load(Data D) noexcept;
 
   /// Load for lazy JIT. The data is kept alive by the caller so following

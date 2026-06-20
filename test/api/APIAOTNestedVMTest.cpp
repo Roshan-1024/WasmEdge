@@ -78,7 +78,7 @@ template <typename T> struct Ptr {
   using Pffi = T *;
   Pffi Ffi{};
   Ptr() {}
-  Ptr(Pffi Ffi) : Ffi{Ffi} {}
+  Ptr(Pffi VFfi) : Ffi{VFfi} {}
   Ptr(const Ptr &) = delete;
   Ptr(Ptr &&Other) { std::swap(Ffi, Other.Ffi); }
   ~Ptr() {

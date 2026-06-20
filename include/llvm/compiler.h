@@ -30,7 +30,7 @@ class TargetMachine;
 /// Compiling Module into LLVM Module.
 class Compiler {
 public:
-  Compiler(const Configure &Conf) noexcept : Context(nullptr), Conf(Conf) {}
+  Compiler(const Configure &VConf) noexcept : Context(nullptr), Conf(VConf) {}
 
   Expect<void> checkConfigure() noexcept;
 

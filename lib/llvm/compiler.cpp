@@ -566,12 +566,12 @@ class FunctionCompiler {
   struct Control;
 
 public:
-  FunctionCompiler(LLVM::Compiler::CompileContext &Context,
-                   LLVM::FunctionCallee F, Span<const ValType> Locals,
-                   bool Interruptible, bool InstructionCounting,
-                   bool GasMeasuring, bool IsLazyJIT) noexcept
-      : Context(Context), LLContext(Context.LLContext),
-        Interruptible(Interruptible), IsLazyJIT(IsLazyJIT), F(F),
+  FunctionCompiler(LLVM::Compiler::CompileContext &VContext,
+                   LLVM::FunctionCallee VF, Span<const ValType> Locals,
+                   bool VInterruptible, bool InstructionCounting,
+                   bool GasMeasuring, bool VIsLazyJIT) noexcept
+      : Context(VContext), LLContext(VContext.LLContext),
+        Interruptible(VInterruptible), IsLazyJIT(VIsLazyJIT), F(VF),
         Builder(LLContext) {
     if (F.Fn) {
       Builder.positionAtEnd(LLVM::BasicBlock::create(LLContext, F.Fn, "entry"));

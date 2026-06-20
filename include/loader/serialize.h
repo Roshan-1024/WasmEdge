@@ -26,7 +26,7 @@ namespace Loader {
 
 class Serializer {
 public:
-  Serializer(const Configure &Conf) noexcept : Conf(Conf) {}
+  Serializer(const Configure &VConf) noexcept : Conf(VConf) {}
   ~Serializer() noexcept = default;
 
   /// Serialize a WASM module.

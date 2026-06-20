@@ -27,7 +27,7 @@ namespace WasmEdge::LLVM {
 /// Compiling LLVM Module into loadable executable binary.
 class CodeGen {
 public:
-  CodeGen(const Configure &Conf) noexcept : Conf(Conf) {}
+  CodeGen(const Configure &VConf) noexcept : Conf(VConf) {}
   Expect<void> codegen(Span<const Byte> WasmData, Data D,
                        std::filesystem::path OutputPath) noexcept;
 

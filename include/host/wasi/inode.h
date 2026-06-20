@@ -71,8 +71,8 @@ struct FdHolder {
       reset();
     }
   }
-  explicit constexpr FdHolder(int Fd, bool Cleanup = true) noexcept
-      : Fd(Fd), Cleanup(Cleanup) {}
+  explicit constexpr FdHolder(int VFd, bool VCleanup = true) noexcept
+      : Fd(VFd), Cleanup(VCleanup) {}
   constexpr bool ok() const noexcept { return Fd >= 0; }
   void reset() noexcept;
   int release() noexcept { return std::exchange(Fd, -1); }

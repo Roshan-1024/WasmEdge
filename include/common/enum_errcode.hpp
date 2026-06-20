@@ -128,8 +128,8 @@ public:
 
 private:
   union InnerT {
-    constexpr InnerT(uint32_t Num) : Num(Num) {}
-    constexpr InnerT(ErrCode::Value Code) : Code(Code) {}
+    constexpr InnerT(uint32_t VNum) : Num(VNum) {}
+    constexpr InnerT(ErrCode::Value VCode) : Code(VCode) {}
     uint32_t Num;
     ErrCode::Value Code;
   } Inner;

@@ -81,8 +81,8 @@ checkSubtypeDepth(const uint32_t BaseIdx, uint32_t TestIdx,
 } // namespace
 
 // Validator constructor. See "include/validator/validator.h".
-Validator::Validator(const Configure &Conf) noexcept
-    : Conf(Conf),
+Validator::Validator(const Configure &VConf) noexcept
+    : Conf(VConf),
       CoreFuncType_I32_I32(makeCoreFuncType({TypeCode::I32}, {TypeCode::I32})),
       CoreFuncType_I32_Void(makeCoreFuncType({TypeCode::I32}, {})) {}
 

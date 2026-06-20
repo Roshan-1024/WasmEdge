@@ -101,16 +101,16 @@ Expect<uint32_t> FileMgr::readU32() {
   // Read and decode U32.
   uint32_t Result = 0;
   uint32_t Offset = 0;
-  Byte Byte = 0x80;
-  while (Byte & 0x80) {
+  Byte NextByte = 0x80;
+  while (NextByte & 0x80) {
     if (unlikely(Offset >= 32)) {
       Status = ErrCode::Value::IntegerTooLong;
       return Unexpect(Status);
     }
     EXPECTED_TRY(testRead(1));
-    Byte = Data[Pos++];
-    Result |= (Byte & UINT32_C(0x7F)) << Offset;
-    if (Offset == 28 && unlikely((Byte & UINT32_C(0x70)) != 0)) {
+    NextByte = Data[Pos++];
+    Result |= (NextByte & UINT32_C(0x7F)) << Offset;
+    if (Offset == 28 && unlikely((NextByte & UINT32_C(0x70)) != 0)) {
       Status = ErrCode::Value::IntegerTooLarge;
       return Unexpect(Status);
     }
@@ -130,16 +130,16 @@ Expect<uint64_t> FileMgr::readU64() {
   // Read and decode U64.
   uint64_t Result = 0;
   uint64_t Offset = 0;
-  Byte Byte = 0x80;
-  while (Byte & 0x80) {
+  Byte NextByte = 0x80;
+  while (NextByte & 0x80) {
     if (unlikely(Offset >= 64)) {
       Status = ErrCode::Value::IntegerTooLong;
       return Unexpect(Status);
     }
     EXPECTED_TRY(testRead(1));
-    Byte = Data[Pos++];
-    Result |= (Byte & UINT64_C(0x7F)) << Offset;
-    if (Offset == 63 && unlikely((Byte & UINT32_C(0x7E)) != 0)) {
+    NextByte = Data[Pos++];
+    Result |= (NextByte & UINT64_C(0x7F)) << Offset;
+    if (Offset == 63 && unlikely((NextByte & UINT32_C(0x7E)) != 0)) {
       Status = ErrCode::Value::IntegerTooLarge;
       return Unexpect(Status);
     }
@@ -173,11 +173,11 @@ template <typename RetType, size_t N> Expect<RetType> FileMgr::readSN() {
 
     // In the remaining logic, RemainingBits must be at least 1.
     EXPECTED_TRY(testRead(1));
-    WasmEdge::Byte Byte = Data[Pos++];
+    WasmEdge::Byte NextByte = Data[Pos++];
 
     const WasmEdge::Byte HighestBitMask = 1 << 7;
     const WasmEdge::Byte SecondHighestBitMask = 1 << 6;
-    if (Byte & HighestBitMask) {
+    if (NextByte & HighestBitMask) {
       // The byte has a leading 1. It contains a 7-bit payload.
 
       if (unlikely(RemainingBits < 7)) {
@@ -186,7 +186,7 @@ template <typename RetType, size_t N> Expect<RetType> FileMgr::readSN() {
       }
 
       std::make_unsigned_t<RetType> Payload =
-          Byte & (~HighestBitMask); // & 0b01111111
+          NextByte & (~HighestBitMask); // & 0b01111111
       Result |= (Payload << Offset);
       Offset += 7;
       RemainingBits -= 7;
@@ -197,10 +197,10 @@ template <typename RetType, size_t N> Expect<RetType> FileMgr::readSN() {
       // must be at least 1, EffectiveBits also must be at least 1. It is also
       // at most 7.
       size_t EffectiveBits = RemainingBits < 7 ? RemainingBits : 7;
-      std::make_unsigned_t<RetType> Payload = Byte;
-      if (Byte & SecondHighestBitMask) {
+      std::make_unsigned_t<RetType> Payload = NextByte;
+      if (NextByte & SecondHighestBitMask) {
         // The byte is signed.
-        if (Byte >= (1 << 7) - (1 << (EffectiveBits - 1))) {
+        if (NextByte >= (1 << 7) - (1 << (EffectiveBits - 1))) {
           Payload -= (1 << 7);
         } else {
           Status = ErrCode::Value::IntegerTooLarge;
@@ -208,7 +208,7 @@ template <typename RetType, size_t N> Expect<RetType> FileMgr::readSN() {
         }
       } else {
         // The byte is unsigned.
-        if (Byte >= (1 << (EffectiveBits - 1))) {
+        if (NextByte >= (1 << (EffectiveBits - 1))) {
           Status = ErrCode::Value::IntegerTooLarge;
           return Unexpect(Status);
         }
@@ -238,12 +238,12 @@ Expect<float> FileMgr::readF32() {
   LastPos = Pos;
 
   uint32_t Buf = 0;
-  Byte Byte = 0x00;
+  Byte NextByte = 0x00;
   // Check whether reading exceeds the data or section boundary.
   EXPECTED_TRY(testRead(4));
   for (uint32_t I = 0; I < 4; I++) {
-    Byte = Data[Pos++];
-    Buf |= (Byte & UINT32_C(0xFF)) << (I * UINT32_C(8));
+    NextByte = Data[Pos++];
+    Buf |= (NextByte & UINT32_C(0xFF)) << (I * UINT32_C(8));
   }
   float Result;
   static_assert(sizeof(Buf) == sizeof(Result));
@@ -260,12 +260,12 @@ Expect<double> FileMgr::readF64() {
   LastPos = Pos;
 
   uint64_t Buf = 0;
-  Byte Byte = 0x00;
+  Byte NextByte = 0x00;
   // Check whether reading exceeds the data or section boundary.
   EXPECTED_TRY(testRead(8));
   for (uint32_t I = 0; I < 8; I++) {
-    Byte = Data[Pos++];
-    Buf |= (Byte & UINT64_C(0xFF)) << (I * UINT64_C(8));
+    NextByte = Data[Pos++];
+    Buf |= (NextByte & UINT64_C(0xFF)) << (I * UINT64_C(8));
   }
   double Result;
   static_assert(sizeof(Buf) == sizeof(Result));
