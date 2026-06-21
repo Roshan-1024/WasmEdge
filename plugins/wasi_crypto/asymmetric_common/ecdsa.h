@@ -48,9 +48,9 @@ class Ecdsa {
 public:
   class PublicKeyBase {
   public:
-    PublicKeyBase(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKeyBase(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    PublicKeyBase(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKeyBase(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<PublicKey>
     import(Span<const uint8_t> Encoded,
@@ -164,9 +164,9 @@ public:
 
   class SecretKeyBase {
   public:
-    SecretKeyBase(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    SecretKeyBase(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    SecretKeyBase(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    SecretKeyBase(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<SecretKey>
     import(Span<const uint8_t> Encoded,
@@ -284,9 +284,9 @@ public:
 
   class KeyPairBase {
   public:
-    KeyPairBase(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    KeyPairBase(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    KeyPairBase(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    KeyPairBase(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<KeyPair>
     generate(OptionalRef<const OptionsType>) noexcept {

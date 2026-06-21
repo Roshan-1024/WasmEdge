@@ -59,7 +59,7 @@ template <int CipherNid> class Cipher {
 public:
   class Key {
   public:
-    Key(SecretVec Data) noexcept : Data(std::move(Data)) {}
+    Key(SecretVec VData) noexcept : Data(std::move(VData)) {}
 
     static WasiCryptoExpect<Key> import(Span<const uint8_t> Data) noexcept;
 
@@ -82,8 +82,8 @@ public:
     static WasiCryptoExpect<State>
     open(const Key &Key, OptionalRef<const Options> OptOption) noexcept;
 
-    State(EvpCipherCtxPtr Ctx, std::array<uint8_t, NonceSize> Nonce) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx), Nonce)) {}
+    State(EvpCipherCtxPtr VCtx, std::array<uint8_t, NonceSize> Nonce) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx), Nonce)) {}
 
     WasiCryptoExpect<size_t> optionsGet(std::string_view Name,
                                         Span<uint8_t> Value) const noexcept;
@@ -159,9 +159,9 @@ public:
                                          Span<const uint8_t> Data,
                                          Span<const uint8_t> RawTag) noexcept;
     struct Inner {
-      Inner(EvpCipherCtxPtr RawCtx,
-            std::array<uint8_t, NonceSize> Nonce) noexcept
-          : RawCtx(std::move(RawCtx)), Nonce(Nonce) {}
+      Inner(EvpCipherCtxPtr VRawCtx,
+            std::array<uint8_t, NonceSize> VNonce) noexcept
+          : RawCtx(std::move(VRawCtx)), Nonce(VNonce) {}
       EvpCipherCtxPtr RawCtx;
       const std::array<uint8_t, NonceSize> Nonce;
       std::mutex Mutex;

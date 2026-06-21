@@ -141,7 +141,7 @@ public:
   public:
     class Key {
     public:
-      Key(SecretVec Data) noexcept : Data(std::move(Data)) {}
+      Key(SecretVec VData) noexcept : Data(std::move(VData)) {}
 
       static WasiCryptoExpect<Key> import(Span<const uint8_t> Data) noexcept;
 
@@ -161,8 +161,8 @@ public:
       static WasiCryptoExpect<State>
       open(const Key &Key, OptionalRef<const Options> OptOption) noexcept;
 
-      State(EvpPkeyCtxPtr Ctx) noexcept
-          : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+      State(EvpPkeyCtxPtr VCtx) noexcept
+          : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
       /// absorb info information.
       WasiCryptoExpect<void> absorb(Span<const uint8_t> Data) noexcept;
@@ -174,7 +174,7 @@ public:
 
     private:
       struct Inner {
-        Inner(EvpPkeyCtxPtr RawCtx) : RawCtx(std::move(RawCtx)) {}
+        Inner(EvpPkeyCtxPtr VRawCtx) : RawCtx(std::move(VRawCtx)) {}
         EvpPkeyCtxPtr RawCtx;
         std::mutex Mutex;
       };
@@ -186,7 +186,7 @@ public:
   public:
     class Key {
     public:
-      Key(SecretVec Data) noexcept : Data(std::move(Data)) {}
+      Key(SecretVec VData) noexcept : Data(std::move(VData)) {}
 
       static WasiCryptoExpect<Key> import(Span<const uint8_t> Data) noexcept;
 
@@ -203,8 +203,8 @@ public:
 
     class State : public ExtractState<Key> {
     public:
-      State(EvpPkeyCtxPtr Ctx) noexcept
-          : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+      State(EvpPkeyCtxPtr VCtx) noexcept
+          : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
       static WasiCryptoExpect<State>
       open(const Key &Key, OptionalRef<const Options> OptOption) noexcept;
@@ -220,7 +220,7 @@ public:
 
     private:
       struct Inner {
-        Inner(EvpPkeyCtxPtr RawCtx) : RawCtx(std::move(RawCtx)) {}
+        Inner(EvpPkeyCtxPtr VRawCtx) : RawCtx(std::move(VRawCtx)) {}
         std::mutex Mutex;
         std::vector<uint8_t> Salt;
         EvpPkeyCtxPtr RawCtx;

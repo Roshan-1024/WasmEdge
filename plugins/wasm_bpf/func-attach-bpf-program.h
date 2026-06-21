@@ -17,7 +17,7 @@ namespace Host {
 class AttachBpfProgram
     : public WasmEdge::Runtime::HostFunction<AttachBpfProgram> {
 public:
-  AttachBpfProgram(state_t state) : state(state) {}
+  AttachBpfProgram(state_t Vstate) : state(Vstate) {}
   WasmEdge::Expect<int32_t> body(const WasmEdge::Runtime::CallingFrame &Frame,
                                  handle_t program, uint32_t name,
                                  uint32_t attach_target);

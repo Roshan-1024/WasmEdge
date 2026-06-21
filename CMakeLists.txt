@@ -52,9 +52,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Enforce shadow variable errors.
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-  add_compile_options(-Wshadow)
+  add_compile_options(-Wshadow -Werror=shadow)
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wshadow-field)
+    add_compile_options(-Wshadow-field -Werror=shadow-field)
   endif()
 endif()
 

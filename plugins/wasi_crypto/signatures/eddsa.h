@@ -35,7 +35,7 @@ class Eddsa {
 public:
   class Signature {
   public:
-    Signature(std::vector<uint8_t> &&Data) noexcept : Data(std::move(Data)) {}
+    Signature(std::vector<uint8_t> &&VData) noexcept : Data(std::move(VData)) {}
 
     static WasiCryptoExpect<Signature>
     import(Span<const uint8_t> Encoded,
@@ -52,8 +52,8 @@ public:
 
   class SignState {
   public:
-    SignState(EvpMdCtxPtr Ctx) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+    SignState(EvpMdCtxPtr VCtx) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
     WasiCryptoExpect<void> update(Span<uint8_t const> Input) noexcept;
 
@@ -71,8 +71,8 @@ public:
 
   class VerificationState {
   public:
-    VerificationState(EvpMdCtxPtr Ctx) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+    VerificationState(EvpMdCtxPtr VCtx) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
     WasiCryptoExpect<void> update(Span<const uint8_t> Input) noexcept;
 
@@ -92,9 +92,9 @@ public:
 
   class PublicKey {
   public:
-    PublicKey(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKey(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    PublicKey(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKey(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<PublicKey>
     import(Span<const uint8_t> Encoded,
@@ -113,9 +113,9 @@ public:
 
   class SecretKey {
   public:
-    SecretKey(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    SecretKey(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    SecretKey(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    SecretKey(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<SecretKey>
     import(Span<const uint8_t> Encoded,
@@ -134,9 +134,9 @@ public:
 
   class KeyPair {
   public:
-    KeyPair(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    KeyPair(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    KeyPair(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    KeyPair(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<KeyPair>
     generate(OptionalRef<const Options> Options) noexcept;

@@ -22,7 +22,7 @@ namespace Host {
 /// state. Returns 0 on failure.
 class LoadBpfObject : public WasmEdge::Runtime::HostFunction<LoadBpfObject> {
 public:
-  LoadBpfObject(state_t state) : state(state) {}
+  LoadBpfObject(state_t Vstate) : state(Vstate) {}
   WasmEdge::Expect<handle_t> body(const WasmEdge::Runtime::CallingFrame &Frame,
                                   uint32_t obj_buf, uint32_t obj_buf_sz);
 

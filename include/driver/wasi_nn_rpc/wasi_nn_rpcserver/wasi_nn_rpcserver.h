@@ -51,8 +51,8 @@ void writeBinaries(WasmEdge::Runtime::Instance::MemoryInstance &MemInst,
 class HostFuncCaller {
 public:
   HostFuncCaller(const Runtime::Instance::ModuleInstance &NNM,
-                 std::string_view FuncName, uint32_t MemorySize) noexcept
-      : FuncInst(NNM.findFuncExports(FuncName)), FuncName(FuncName), Mod(""),
+                 std::string_view VFuncName, uint32_t MemorySize) noexcept
+      : FuncInst(NNM.findFuncExports(VFuncName)), FuncName(VFuncName), Mod(""),
         Frame(nullptr, &Mod) {
     Mod.addHostMemory(
         "memory"sv,

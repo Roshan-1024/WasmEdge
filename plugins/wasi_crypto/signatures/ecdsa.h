@@ -37,7 +37,7 @@ public:
       AsymmetricCommon::Ecdsa<CurveNid, PublicKey, SecretKey, KeyPair, Options>;
   class Signature {
   public:
-    Signature(std::vector<uint8_t> Data) noexcept : Data(std::move(Data)) {}
+    Signature(std::vector<uint8_t> VData) noexcept : Data(std::move(VData)) {}
 
     static WasiCryptoExpect<Signature>
     import(Span<const uint8_t> Encoded,
@@ -55,8 +55,8 @@ public:
 
   class SignState {
   public:
-    SignState(EvpMdCtxPtr Ctx) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+    SignState(EvpMdCtxPtr VCtx) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
     WasiCryptoExpect<void> update(Span<const uint8_t> Input) noexcept;
 
@@ -64,7 +64,7 @@ public:
 
   private:
     struct Inner {
-      Inner(EvpMdCtxPtr RawCtx) noexcept : RawCtx(std::move(RawCtx)) {}
+      Inner(EvpMdCtxPtr VRawCtx) noexcept : RawCtx(std::move(VRawCtx)) {}
       std::mutex Mutex;
       EvpMdCtxPtr RawCtx;
     };
@@ -73,8 +73,8 @@ public:
 
   class VerificationState {
   public:
-    VerificationState(EvpMdCtxPtr Ctx) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+    VerificationState(EvpMdCtxPtr VCtx) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
     WasiCryptoExpect<void> update(Span<const uint8_t> Input) noexcept;
 
@@ -82,7 +82,7 @@ public:
 
   private:
     struct Inner {
-      Inner(EvpMdCtxPtr RawCtx) noexcept : RawCtx(std::move(RawCtx)) {}
+      Inner(EvpMdCtxPtr VRawCtx) noexcept : RawCtx(std::move(VRawCtx)) {}
       std::mutex Mutex;
       EvpMdCtxPtr RawCtx;
     };

@@ -103,8 +103,8 @@ public:
 
   class State : public HashState<Key> {
   public:
-    State(EvpMdCtxPtr Ctx) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+    State(EvpMdCtxPtr VCtx) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
     static WasiCryptoExpect<State>
     open(OptionalRef<const Options> OptOption) noexcept;

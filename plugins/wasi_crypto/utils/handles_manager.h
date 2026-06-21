@@ -91,9 +91,9 @@ protected:
   /// The handle internal representation: [-TypeID-|------CurrentNumber------]
   union HandleWrapper {
     static_assert(sizeof(HandleType) == 4, "HandleType must be 4 byte");
-    HandleWrapper(uint8_t TypeID, uint32_t CurrentNumber) noexcept
-        : TypeID(TypeID), CurrentNumber(CurrentNumber) {}
-    explicit HandleWrapper(HandleType Handle) : Handle(Handle) {}
+    HandleWrapper(uint8_t VTypeID, uint32_t VCurrentNumber) noexcept
+        : TypeID(VTypeID), CurrentNumber(VCurrentNumber) {}
+    explicit HandleWrapper(HandleType VHandle) : Handle(VHandle) {}
 
     HandleWrapper nextHandle() noexcept {
       return {TypeID, static_cast<uint32_t>(CurrentNumber + 1)};

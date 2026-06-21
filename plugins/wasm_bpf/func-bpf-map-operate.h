@@ -16,7 +16,7 @@ namespace Host {
 /// Returns zero on success; other values indicate errors.
 class BpfMapOperate : public WasmEdge::Runtime::HostFunction<BpfMapOperate> {
 public:
-  BpfMapOperate(state_t state) : state(state) {}
+  BpfMapOperate(state_t Vstate) : state(Vstate) {}
   WasmEdge::Expect<int32_t> body(const WasmEdge::Runtime::CallingFrame &Frame,
                                  int32_t fd, int32_t cmd, uint32_t key,
                                  uint32_t value, uint32_t next_key,
