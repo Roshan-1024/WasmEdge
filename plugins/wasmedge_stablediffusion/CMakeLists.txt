@@ -37,7 +37,12 @@ FetchContent_Declare(
   )
 set(SD_BUILD_SHARED_LIBS ON CACHE INTERNAL "Stable diffusion plugin: Build shared libs")
 FetchContent_MakeAvailable(stable-diffusion)
-set_property(TARGET stable-diffusion PROPERTY POSITION_INDEPENDENT_CODE ON)
+foreach(tgt stable-diffusion ggml ggml-base ggml-cpu)
+  if(TARGET ${tgt})
+    target_compile_options(${tgt} PRIVATE -Wno-shadow)
+  endif()
+endforeach()set_property(TARGET stable-diffusion PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 if(APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 23)
   # `cblas_sgemm()` introduced in macOS 13.3.
   set(GGML_NO_ACCELERATE ON CACHE INTERNAL "Stable diffusion plugin: Turn off accelerate")

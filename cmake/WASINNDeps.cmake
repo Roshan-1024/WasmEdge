@@ -374,6 +374,12 @@ function(wasmedge_setup_llama_target target)
     endif()
 
     FetchContent_MakeAvailable(llama)
+    # --- SILENCE THIRD-PARTY SHADOW WARNINGS ---
+    foreach(tgt llama common ggml ggml-base ggml-cpu mtmd)
+      if(TARGET ${tgt})
+        target_compile_options(${tgt} PRIVATE -Wno-shadow)
+      endif()
+    endforeach()
 
     set(CMAKE_C_FLAGS ${WASMEDGE_C_FLAGS_BACKUP})
     set(CMAKE_CXX_FLAGS ${WASMEDGE_CXX_FLAGS_BACKUP})
@@ -514,6 +520,12 @@ function(wasmedge_setup_whisper_target target)
     endif()
 
     FetchContent_MakeAvailable(whisper)
+    # --- SILENCE THIRD-PARTY SHADOW WARNINGS ---
+    foreach(tgt whisper ggml ggml-base ggml-cpu)
+      if(TARGET ${tgt})
+        target_compile_options(${tgt} PRIVATE -Wno-shadow)
+      endif()
+    endforeach()
 
     set(CMAKE_C_FLAGS ${WASMEDGE_C_FLAGS_BACKUP})
     set(CMAKE_CXX_FLAGS ${WASMEDGE_CXX_FLAGS_BACKUP})
@@ -727,6 +739,12 @@ function(wasmedge_setup_bitnet_target target)
     endif()
 
     add_subdirectory(${bitnet_SOURCE_DIR} ${bitnet_BINARY_DIR})
+    # --- SILENCE THIRD-PARTY SHADOW WARNINGS ---
+    foreach(tgt llama common ggml ggml-base ggml-cpu mtmd)
+      if(TARGET ${tgt})
+        target_compile_options(${tgt} PRIVATE -Wno-shadow)
+      endif()
+    endforeach()
 
     set(CMAKE_C_FLAGS ${WASMEDGE_C_FLAGS_BACKUP})
     set(CMAKE_CXX_FLAGS ${WASMEDGE_CXX_FLAGS_BACKUP})
