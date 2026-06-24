@@ -70,3 +70,4 @@ jobs:
         with:
           name: WasmEdge-${{ inputs.version }}-${{ matrix.asset_postfix }}.tar.gz
           path: build/WasmEdge-${{ inputs.version }}-Linux.tar.gz
+# Testing issue (dummy message)
