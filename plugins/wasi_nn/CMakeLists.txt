@@ -134,7 +134,12 @@ endforeach()
 target_compile_options(wasmedgePluginWasiNN
   PUBLIC
   -DWASMEDGE_PLUGIN
+  PRIVATE
+  -Wno-shadow
 )
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(wasmedgePluginWasiNN PRIVATE -Wno-shadow-field)
+endif()
 
 target_include_directories(wasmedgePluginWasiNN
   PUBLIC
