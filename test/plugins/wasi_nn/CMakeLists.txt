@@ -193,6 +193,11 @@ add_dependencies(wasiNNTests
 include(WASINNDeps)
 wasmedge_setup_wasinn_target(wasiNNTests)
 
+target_compile_options(wasiNNTests PRIVATE -Wno-shadow)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(wasiNNTests PRIVATE -Wno-shadow-field)
+endif()
+
 target_include_directories(wasiNNTests
   PUBLIC
   $<TARGET_PROPERTY:wasmedgePlugin,INCLUDE_DIRECTORIES>

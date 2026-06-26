@@ -73,8 +73,9 @@ template <typename T>
 using PkType = typename KpFromPkAndSkTrait<decltype(&T::toKeyPair)>::PublicKey;
 } // namespace
 
-WasiCryptoExpect<KpVariant> kpFromPkAndSk(const PkVariant &PkVariant,
-                                          const SkVariant &SkVariant) noexcept {
+WasiCryptoExpect<KpVariant>
+kpFromPkAndSk(const PkVariant &VPkVariant,
+              const SkVariant &VSkVariant) noexcept {
   return std::visit(
       [](const auto &Pk,
          const auto &Sk) noexcept -> WasiCryptoExpect<KpVariant> {
@@ -86,35 +87,35 @@ WasiCryptoExpect<KpVariant> kpFromPkAndSk(const PkVariant &PkVariant,
           return WasiCryptoUnexpect(__WASI_CRYPTO_ERRNO_INVALID_KEY);
         }
       },
-      PkVariant, SkVariant);
+      VPkVariant, VSkVariant);
 }
 
 WasiCryptoExpect<SecretVec>
-kpExportData(const KpVariant &KpVariant,
+kpExportData(const KpVariant &VKpVariant,
              __wasi_keypair_encoding_e_t Encoding) noexcept {
   return std::visit(
       [Encoding](const auto &Kp) noexcept { return Kp.exportData(Encoding); },
-      KpVariant);
+      VKpVariant);
 }
 
-WasiCryptoExpect<PkVariant> kpPublicKey(const KpVariant &KpVariant) noexcept {
+WasiCryptoExpect<PkVariant> kpPublicKey(const KpVariant &VKpVariant) noexcept {
   return std::visit(
       [](const auto &Kp) noexcept {
         return Kp.publicKey().map([](auto &&Pk) noexcept {
           return PkVariant{std::forward<decltype(Pk)>(Pk)};
         });
       },
-      KpVariant);
+      VKpVariant);
 }
 
-WasiCryptoExpect<SkVariant> kpSecretKey(const KpVariant &KpVariant) noexcept {
+WasiCryptoExpect<SkVariant> kpSecretKey(const KpVariant &VKpVariant) noexcept {
   return std::visit(
       [](const auto &Kp) noexcept {
         return Kp.secretKey().map([](auto &&Sk) noexcept {
           return SkVariant{std::forward<decltype(Sk)>(Sk)};
         });
       },
-      KpVariant);
+      VKpVariant);
 }
 
 } // namespace AsymmetricCommon

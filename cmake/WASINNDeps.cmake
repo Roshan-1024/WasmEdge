@@ -360,7 +360,33 @@ function(wasmedge_setup_llama_target target)
       GIT_TAG        b8757
       GIT_SHALLOW    FALSE
     )
+
+    set(WASMEDGE_C_FLAGS_BACKUP ${CMAKE_C_FLAGS})
+    set(WASMEDGE_CXX_FLAGS_BACKUP ${CMAKE_CXX_FLAGS})
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+      string(APPEND CMAKE_C_FLAGS " -Wno-error=shadow ")
+    endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+      string(APPEND CMAKE_CXX_FLAGS " -Wno-error=shadow ")
+      if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        string(APPEND CMAKE_CXX_FLAGS " -Wno-error=shadow-field ")
+      endif()
+    endif()
+
     FetchContent_MakeAvailable(llama)
+    # --- SILENCE THIRD-PARTY SHADOW WARNINGS ---
+    foreach(tgt llama common ggml ggml-base ggml-cpu mtmd llama-bench llama-imatrix llama-cli llama-server llama-quantize llama-batched-bench llama-gguf-split)
+      if(TARGET ${tgt})
+        target_compile_options(${tgt} PRIVATE -Wno-shadow)
+        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+          target_compile_options(${tgt} PRIVATE -Wno-shadow-field)
+        endif()
+      endif()
+    endforeach()
+
+    set(CMAKE_C_FLAGS ${WASMEDGE_C_FLAGS_BACKUP})
+    set(CMAKE_CXX_FLAGS ${WASMEDGE_CXX_FLAGS_BACKUP})
+
     message(STATUS "Downloading llama.cpp source -- done")
     set_property(TARGET common PROPERTY POSITION_INDEPENDENT_CODE ON)
     set_property(TARGET ggml PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -372,11 +398,12 @@ function(wasmedge_setup_llama_target target)
       set_property(TARGET ggml-cuda PROPERTY POSITION_INDEPENDENT_CODE ON)
     endif()
   endif()
-  # Ignore unused function warnings in common.h in llama.cpp.
+# Ignore unused function and shadow warnings in common.h in llama.cpp.
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_compile_options(${target}
       PRIVATE
       -Wno-error=unused-function
+      -Wno-error=shadow
     )
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(${target}
@@ -385,6 +412,8 @@ function(wasmedge_setup_llama_target target)
       -Wno-error=implicit-float-conversion
       -Wno-error=documentation
       -Wno-error=unused-template
+      -Wno-error=shadow
+      -Wno-error=shadow-field
     )
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(${target}
@@ -480,7 +509,33 @@ function(wasmedge_setup_whisper_target target)
       message(STATUS "WASI-NN Whisper backend: Disable GGML_CUDA")
       set(GGML_CUDA OFF)
     endif()
+
+    set(WASMEDGE_C_FLAGS_BACKUP ${CMAKE_C_FLAGS})
+    set(WASMEDGE_CXX_FLAGS_BACKUP ${CMAKE_CXX_FLAGS})
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+      string(APPEND CMAKE_C_FLAGS " -Wno-error=shadow ")
+    endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+      string(APPEND CMAKE_CXX_FLAGS " -Wno-error=shadow ")
+      if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        string(APPEND CMAKE_CXX_FLAGS " -Wno-error=shadow-field ")
+      endif()
+    endif()
+
     FetchContent_MakeAvailable(whisper)
+    # --- SILENCE THIRD-PARTY SHADOW WARNINGS ---
+    foreach(tgt whisper ggml ggml-base ggml-cpu)
+      if(TARGET ${tgt})
+        target_compile_options(${tgt} PRIVATE -Wno-shadow)
+        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+          target_compile_options(${tgt} PRIVATE -Wno-shadow-field)
+        endif()
+      endif()
+    endforeach()
+
+    set(CMAKE_C_FLAGS ${WASMEDGE_C_FLAGS_BACKUP})
+    set(CMAKE_CXX_FLAGS ${WASMEDGE_CXX_FLAGS_BACKUP})
+
     set_property(TARGET whisper PROPERTY POSITION_INDEPENDENT_CODE ON)
     set_property(TARGET ggml PROPERTY POSITION_INDEPENDENT_CODE ON)
     target_include_directories(whisper
@@ -554,6 +609,17 @@ function(wasmedge_setup_mlx_target target)
       GIT_SHALLOW FALSE
     )
     FetchContent_MakeAvailable(tokenizers)
+    foreach(tgt sentencepiece-static sentencepiece tokenizers_cpp)
+      if(TARGET ${tgt})
+        get_target_property(aliased_tgt ${tgt} ALIASED_TARGET)
+          if(NOT aliased_tgt)
+          target_compile_options(${tgt} PRIVATE -Wno-shadow)
+          if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+            target_compile_options(${tgt} PRIVATE -Wno-shadow-field)
+          endif()
+        endif()
+      endif()
+    endforeach()
     message(STATUS "Downloading tokenizers source -- done")
     set_property(TARGET tokenizers_cpp PROPERTY POSITION_INDEPENDENT_CODE ON)
   endif()
@@ -677,7 +743,31 @@ function(wasmedge_setup_bitnet_target target)
         endif()
     endif()
 
+    set(WASMEDGE_C_FLAGS_BACKUP ${CMAKE_C_FLAGS})
+    set(WASMEDGE_CXX_FLAGS_BACKUP ${CMAKE_CXX_FLAGS})
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+      string(APPEND CMAKE_C_FLAGS " -Wno-error=shadow ")
+    endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+      string(APPEND CMAKE_CXX_FLAGS " -Wno-error=shadow ")
+      if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        string(APPEND CMAKE_CXX_FLAGS " -Wno-error=shadow-field ")
+      endif()
+    endif()
+
     add_subdirectory(${bitnet_SOURCE_DIR} ${bitnet_BINARY_DIR})
+    # --- SILENCE THIRD-PARTY SHADOW WARNINGS ---
+    foreach(tgt llama common ggml ggml-base ggml-cpu mtmd)
+      if(TARGET ${tgt})
+        target_compile_options(${tgt} PRIVATE -Wno-shadow)
+        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+          target_compile_options(${tgt} PRIVATE -Wno-shadow-field)
+        endif()
+      endif()
+    endforeach()
+
+    set(CMAKE_C_FLAGS ${WASMEDGE_C_FLAGS_BACKUP})
+    set(CMAKE_CXX_FLAGS ${WASMEDGE_CXX_FLAGS_BACKUP})
 
     set_property(TARGET llama PROPERTY POSITION_INDEPENDENT_CODE ON)
     set_property(TARGET common PROPERTY POSITION_INDEPENDENT_CODE ON)

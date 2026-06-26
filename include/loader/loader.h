@@ -217,9 +217,9 @@ inline ASTNodeAttr NodeAttrFromAST<AST::Component::FutureTy>() noexcept {
 /// Loader flow control class.
 class Loader {
 public:
-  Loader(const Configure &Conf,
+  Loader(const Configure &VConf,
          const Executable::IntrinsicsTable *IT = nullptr) noexcept
-      : Conf(Conf), Ser(Conf), IntrinsicsTable(IT) {}
+      : Conf(VConf), Ser(VConf), IntrinsicsTable(IT) {}
   ~Loader() noexcept = default;
 
   /// Load data from file path.

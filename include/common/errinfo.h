@@ -258,7 +258,7 @@ struct InfoBoundary {
 
 struct InfoProposal {
   InfoProposal() = delete;
-  InfoProposal(Proposal P) noexcept : P(P) {}
+  InfoProposal(Proposal VP) noexcept : P(VP) {}
 
   Proposal P;
 };

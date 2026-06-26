@@ -80,8 +80,8 @@ private:
       add_option("h"sv, *HelpOpt);
       add_option("help"sv, *HelpOpt);
     }
-    SubCommandDescriptor(SubCommand &SC) noexcept : SubCommandDescriptor() {
-      this->SC = &SC;
+    SubCommandDescriptor(SubCommand &VSC) noexcept : SubCommandDescriptor() {
+      SC = &VSC;
     }
 
     template <typename... ArgsT>

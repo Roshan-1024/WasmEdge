@@ -151,7 +151,8 @@ class FieldType {
 public:
   /// Constructors.
   FieldType() noexcept = default;
-  FieldType(const ValType &Type, ValMut Mut) noexcept : Type(Type), Mut(Mut) {}
+  FieldType(const ValType &VType, ValMut VMut) noexcept
+      : Type(VType), Mut(VMut) {}
 
   /// Getter and setter for storage type.
   const ValType &getStorageType() const noexcept { return Type; }

@@ -26,7 +26,7 @@ namespace Host {
 /// \return 0 on success, error code on failure.
 class BpfBufferPoll : public WasmEdge::Runtime::HostFunction<BpfBufferPoll> {
 public:
-  BpfBufferPoll(state_t state) : state(state) {}
+  BpfBufferPoll(state_t Vstate) : state(Vstate) {}
   WasmEdge::Expect<int32_t> body(const WasmEdge::Runtime::CallingFrame &Frame,
                                  handle_t program, int32_t fd,
                                  int32_t sample_func, uint32_t ctx,

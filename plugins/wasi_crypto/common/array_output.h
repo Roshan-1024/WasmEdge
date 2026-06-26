@@ -40,9 +40,9 @@ public:
   ArrayOutput &operator=(ArrayOutput &&) noexcept = delete;
   ArrayOutput(ArrayOutput &&) noexcept = delete;
 
-  ArrayOutput(std::vector<uint8_t> &&Data) noexcept : Data(std::move(Data)) {}
+  ArrayOutput(std::vector<uint8_t> &&VData) noexcept : Data(std::move(VData)) {}
 
-  ArrayOutput(SecretVec &&Data) noexcept : Data(std::move(Data)) {}
+  ArrayOutput(SecretVec &&VData) noexcept : Data(std::move(VData)) {}
 
   /// Copy the contents to the @param Buf buffer.
   /// Multiple calls are possible, and the total number of bytes to be read is

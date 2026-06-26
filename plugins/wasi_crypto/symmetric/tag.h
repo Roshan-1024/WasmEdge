@@ -37,7 +37,7 @@ public:
   Tag(const Tag &Data) noexcept = delete;
   Tag &operator=(const Tag &Data) noexcept = delete;
 
-  Tag(SecretVec &&Data) noexcept : Data(std::move(Data)) {}
+  Tag(SecretVec &&VData) noexcept : Data(std::move(VData)) {}
 
   size_t len() const noexcept { return Data.size(); }
 

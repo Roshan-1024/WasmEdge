@@ -152,10 +152,10 @@ public:
   /// Pop the top handler on the stack.
   std::optional<Handler> popTopHandler(uint32_t AssocValSize) noexcept {
     while (!FrameStack.empty()) {
-      auto &Frame = FrameStack.back();
-      if (!Frame.HandlerStack.empty()) {
-        auto TopHandler = std::move(Frame.HandlerStack.back());
-        Frame.HandlerStack.pop_back();
+      auto &TopFrame = FrameStack.back();
+      if (!TopFrame.HandlerStack.empty()) {
+        auto TopHandler = std::move(TopFrame.HandlerStack.back());
+        TopFrame.HandlerStack.pop_back();
         assuming(TopHandler.VPos <= ValueStack.size() - AssocValSize);
         ValueStack.erase(ValueStack.begin() + TopHandler.VPos,
                          ValueStack.end() - AssocValSize);
@@ -173,9 +173,9 @@ public:
     // in current frame becomes inactive.
     auto &HandlerStack = FrameStack.back().HandlerStack;
     while (!HandlerStack.empty()) {
-      auto &Handler = HandlerStack.back();
-      if (PC < Handler.Try ||
-          PC > Handler.Try + Handler.Try->getTryCatch().JumpEnd) {
+      auto &TopHandler = HandlerStack.back();
+      if (PC < TopHandler.Try ||
+          PC > TopHandler.Try + TopHandler.Try->getTryCatch().JumpEnd) {
         HandlerStack.pop_back();
       } else {
         break;

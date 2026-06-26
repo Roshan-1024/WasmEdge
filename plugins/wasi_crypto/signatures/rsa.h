@@ -34,7 +34,7 @@ template <int PadMode, int KeyBits, int ShaNid> class Rsa {
 public:
   class Signature {
   public:
-    Signature(std::vector<uint8_t> &&Data) noexcept : Data(std::move(Data)) {}
+    Signature(std::vector<uint8_t> &&VData) noexcept : Data(std::move(VData)) {}
 
     static WasiCryptoExpect<Signature>
     import(Span<const uint8_t> Encoded,
@@ -51,8 +51,8 @@ public:
 
   class SignState {
   public:
-    SignState(EvpMdCtxPtr Ctx) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+    SignState(EvpMdCtxPtr VCtx) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
     WasiCryptoExpect<void> update(Span<uint8_t const> Data) noexcept;
 
@@ -60,7 +60,7 @@ public:
 
   private:
     struct Inner {
-      Inner(EvpMdCtxPtr RawCtx) noexcept : RawCtx(std::move(RawCtx)) {}
+      Inner(EvpMdCtxPtr VRawCtx) noexcept : RawCtx(std::move(VRawCtx)) {}
       std::mutex Mutex;
       EvpMdCtxPtr RawCtx;
     };
@@ -69,8 +69,8 @@ public:
 
   class VerificationState {
   public:
-    VerificationState(EvpMdCtxPtr Ctx) noexcept
-        : Ctx(std::make_shared<Inner>(std::move(Ctx))) {}
+    VerificationState(EvpMdCtxPtr VCtx) noexcept
+        : Ctx(std::make_shared<Inner>(std::move(VCtx))) {}
 
     WasiCryptoExpect<void> update(Span<uint8_t const> Data) noexcept;
 
@@ -78,7 +78,7 @@ public:
 
   private:
     struct Inner {
-      Inner(EvpMdCtxPtr RawCtx) noexcept : RawCtx(std::move(RawCtx)) {}
+      Inner(EvpMdCtxPtr VRawCtx) noexcept : RawCtx(std::move(VRawCtx)) {}
       std::mutex Mutex;
       EvpMdCtxPtr RawCtx;
     };
@@ -87,9 +87,9 @@ public:
 
   class PublicKey {
   public:
-    PublicKey(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKey(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    PublicKey(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKey(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<PublicKey>
     import(Span<uint8_t const> Encoded,
@@ -122,9 +122,9 @@ public:
 
   class SecretKey {
   public:
-    SecretKey(EvpPkeyPtr Ctx) : Ctx(std::move(Ctx)) {}
+    SecretKey(EvpPkeyPtr VCtx) : Ctx(std::move(VCtx)) {}
 
-    SecretKey(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    SecretKey(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<SecretKey>
     import(Span<const uint8_t> Encoded,
@@ -155,9 +155,9 @@ public:
 
   class KeyPair {
   public:
-    KeyPair(EvpPkeyPtr Ctx) : Ctx(std::move(Ctx)) {}
+    KeyPair(EvpPkeyPtr VCtx) : Ctx(std::move(VCtx)) {}
 
-    KeyPair(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    KeyPair(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<KeyPair>
     import(Span<const uint8_t> Encoded,

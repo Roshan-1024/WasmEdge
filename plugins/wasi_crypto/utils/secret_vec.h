@@ -37,8 +37,8 @@ public:
   SecretVec &operator=(SecretVec &&) noexcept = default;
   SecretVec(SecretVec &&) noexcept = default;
 
-  SecretVec(Span<const uint8_t> Data) noexcept
-      : Data(Data.begin(), Data.end()) {}
+  SecretVec(Span<const uint8_t> VData) noexcept
+      : Data(VData.begin(), VData.end()) {}
 
   SecretVec(size_t Size) noexcept : Data(Size) {}
 

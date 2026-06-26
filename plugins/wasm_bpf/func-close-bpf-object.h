@@ -17,7 +17,7 @@ namespace Host {
 /// Returns 0 on success; other values represent error codes.
 class CloseBpfObject : public WasmEdge::Runtime::HostFunction<CloseBpfObject> {
 public:
-  CloseBpfObject(state_t state) : state(state) {}
+  CloseBpfObject(state_t Vstate) : state(Vstate) {}
   WasmEdge::Expect<int32_t> body(const WasmEdge::Runtime::CallingFrame &Frame,
                                  handle_t program);
 

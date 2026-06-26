@@ -123,7 +123,7 @@ WasiCryptoExpect<std::vector<uint8_t>> i2oEcdsaSig(ECDSA_SIG *Sig);
 // wasteful. It only provides limited functions for correct use.
 class SharedEvpPkey {
 public:
-  SharedEvpPkey(EvpPkeyPtr Pkey) noexcept : Pkey(Pkey.release()) {}
+  SharedEvpPkey(EvpPkeyPtr VPkey) noexcept : Pkey(VPkey.release()) {}
   ~SharedEvpPkey() noexcept;
 
   SharedEvpPkey(const SharedEvpPkey &Rhs) noexcept;

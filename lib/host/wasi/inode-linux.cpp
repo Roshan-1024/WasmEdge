@@ -1631,18 +1631,19 @@ void Poller::clock(__wasi_clockid_t Clock, __wasi_timestamp_t Timeout,
     Timers.emplace_back(std::move(*Res));
   }
 
-  auto &Timer = Timers.back();
-  if (auto Res = Timer.setTime(Timeout, Precision, Flags); unlikely(!Res)) {
-    Ctx->releaseTimer(std::move(Timer));
+  auto &ActiveTimer = Timers.back();
+  if (auto Res = ActiveTimer.setTime(Timeout, Precision, Flags);
+      unlikely(!Res)) {
+    Ctx->releaseTimer(std::move(ActiveTimer));
     Timers.pop_back();
     Event.Valid = true;
     Event.error = Res.error();
     return;
   }
 
-  assuming(Timer.Fd != Fd);
+  assuming(ActiveTimer.Fd != Fd);
   try {
-    auto [Iter, Added] = FdDatas.try_emplace(Timer.Fd);
+    auto [Iter, Added] = FdDatas.try_emplace(ActiveTimer.Fd);
 
     Iter->second.ReadEvent = &Event;
     assuming(Added);
@@ -1652,12 +1653,12 @@ void Poller::clock(__wasi_clockid_t Clock, __wasi_timestamp_t Timeout,
 #if defined(EPOLLRDHUP)
     EPollEvent.events |= EPOLLRDHUP;
 #endif
-    EPollEvent.data.fd = Timer.Fd;
+    EPollEvent.data.fd = ActiveTimer.Fd;
 
-    if (auto Res = ::epoll_ctl(Fd, EPOLL_CTL_ADD, Timer.Fd, &EPollEvent);
+    if (auto Res = ::epoll_ctl(Fd, EPOLL_CTL_ADD, ActiveTimer.Fd, &EPollEvent);
         unlikely(Res < 0)) {
       FdDatas.erase(Iter);
-      Ctx->releaseTimer(std::move(Timer));
+      Ctx->releaseTimer(std::move(ActiveTimer));
       Timers.pop_back();
       Event.Valid = true;
       Event.error = fromErrNo(errno);
@@ -1666,7 +1667,7 @@ void Poller::clock(__wasi_clockid_t Clock, __wasi_timestamp_t Timeout,
 
     return;
   } catch (std::bad_alloc &) {
-    Ctx->releaseTimer(std::move(Timer));
+    Ctx->releaseTimer(std::move(ActiveTimer));
     Timers.pop_back();
     Event.Valid = true;
     Event.error = __WASI_ERRNO_NOMEM;
@@ -1794,7 +1795,8 @@ void Poller::write(const INode &Node, TriggerType Trigger,
 }
 
 void Poller::wait() noexcept {
-  for (const auto &[NodeFd, FdData] : OldFdDatas) {
+  for (const auto &OldFdData : OldFdDatas) {
+    const auto &NodeFd = OldFdData.first;
     if (auto Iter = FdDatas.find(NodeFd); Iter == FdDatas.end()) {
       // Remove unused event, ignore failed.
       // In kernel before 2.6.9, EPOLL_CTL_DEL required a non-null pointer. Use
@@ -1889,13 +1891,13 @@ void Poller::wait() noexcept {
       ProcessEvent(EPollEvent, *Iter->second.WriteEvent);
     }
   }
-  for (auto &Timer : Timers) {
+  for (auto &ActiveTimer : Timers) {
     // Remove unused timer event, ignore failed.
     // In kernel before 2.6.9, EPOLL_CTL_DEL required a non-null pointer. Use
     // `this` as the dummy parameter.
-    ::epoll_ctl(Fd, EPOLL_CTL_DEL, Timer.Fd,
+    ::epoll_ctl(Fd, EPOLL_CTL_DEL, ActiveTimer.Fd,
                 reinterpret_cast<struct epoll_event *>(this));
-    Ctx->releaseTimer(std::move(Timer));
+    Ctx->releaseTimer(std::move(ActiveTimer));
   }
 
   std::swap(FdDatas, OldFdDatas);

@@ -20,16 +20,16 @@
 namespace WasmEdge {
 namespace VM {
 
-VM::VM(const Configure &Conf)
-    : Conf(Conf), Stage(VMStage::Inited),
+VM::VM(const Configure &VConf)
+    : Conf(VConf), Stage(VMStage::Inited),
       LoaderEngine(Conf, &Executor::Executor::Intrinsics),
       ValidatorEngine(Conf), ExecutorEngine(Conf, &Stat),
       Store(std::make_unique<Runtime::StoreManager>()), StoreRef(*Store.get()) {
   unsafeInitVM();
 }
 
-VM::VM(const Configure &Conf, Runtime::StoreManager &S)
-    : Conf(Conf), Stage(VMStage::Inited),
+VM::VM(const Configure &VConf, Runtime::StoreManager &S)
+    : Conf(VConf), Stage(VMStage::Inited),
       LoaderEngine(Conf, &Executor::Executor::Intrinsics),
       ValidatorEngine(Conf), ExecutorEngine(Conf, &Stat), StoreRef(S) {
   unsafeInitVM();

@@ -30,7 +30,7 @@ namespace WasiCrypto {
 /// should inherit from this class.
 template <typename T> class HostFunction : public Runtime::HostFunction<T> {
 public:
-  HostFunction(Context &Ctx) : Runtime::HostFunction<T>(0), Ctx(Ctx) {}
+  HostFunction(Context &VCtx) : Runtime::HostFunction<T>(0), Ctx(VCtx) {}
 
 protected:
   Context &Ctx;

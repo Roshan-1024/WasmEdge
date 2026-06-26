@@ -34,9 +34,9 @@ class X25519 {
 public:
   class PublicKey {
   public:
-    PublicKey(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKey(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    PublicKey(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    PublicKey(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<PublicKey>
     import(Span<const uint8_t> Encoded,
@@ -57,9 +57,9 @@ public:
 
   class SecretKey {
   public:
-    SecretKey(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    SecretKey(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    SecretKey(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    SecretKey(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<SecretKey>
     import(Span<const uint8_t> Encoded,
@@ -80,9 +80,9 @@ public:
 
   class KeyPair {
   public:
-    KeyPair(EvpPkeyPtr Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    KeyPair(EvpPkeyPtr VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
-    KeyPair(SharedEvpPkey Ctx) noexcept : Ctx(std::move(Ctx)) {}
+    KeyPair(SharedEvpPkey VCtx) noexcept : Ctx(std::move(VCtx)) {}
 
     static WasiCryptoExpect<KeyPair>
     generate(OptionalRef<const Options> Options) noexcept;
